@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 8888;
+const port = 8080;
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const config = require("./config/key");
@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/hello", (req, res) => {
-  res.send("안녕하세요~~~");
+  res.send("hello~~~");
 });
 
 app.post("/api/users/register", async (req, res) => {

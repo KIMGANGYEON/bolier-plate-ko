@@ -1,13 +1,38 @@
 import React, { useState } from "react";
 import Dropzone from "react-dropzone";
 
-const Private = {};
+const PrivateOptions = [
+  { value: 0, label: "Private" },
+  { value: 1, label: "Public" },
+];
+
+const CategoryOptions = [
+  { value: 0, label: "Film & Animation" },
+  { value: 1, label: "Autos & Vehicles" },
+  { value: 0, label: "Music" },
+  { value: 0, label: "Pets & animals" },
+];
 
 function VideoUploadPage() {
   const [VideoTitle, setVideoTitle] = useState("");
   const [Description, setDescription] = useState("");
   const [Private, setPrivate] = useState(0);
   const [Category, setCategory] = useState("Film & Animation");
+
+  const onTitleChange = (e) => {
+    setVideoTitle(e.currentTarget.value);
+  };
+  const onDescriptionChange = (e) => {
+    setDescription(e.currentTarget.value);
+  };
+
+  const onPrivateChange = (e) => {
+    setPrivate(e.currentTarget.value);
+    console.log(Private);
+  };
+  const onCategoryChange = (e) => {
+    setCategory(e.currentTarget.value);
+  };
 
   return (
     <div className="con01" style={{ maxWidth: "700px", margin: "2rem auto" }}>
@@ -42,21 +67,28 @@ function VideoUploadPage() {
         <br />
         <br />
         <label className="title">Title</label>
-        <input onChange value={VideoTitle}></input>
+        <input onChange={onTitleChange} value={VideoTitle} />
         <br />
         <br />
         <label>Description</label>
-        <textarea onChange value={Description}></textarea>
+        <textarea onChange={onDescriptionChange} value={Description} />
         <br />
         <br />
-        <select onChange>
-          <option value>Private</option>
-          <option value>Public</option>
+        <select onChange={onPrivateChange}>
+          {PrivateOptions.map((item, index) => (
+            <option key={index} value={item.value}>
+              {item.label}
+            </option>
+          ))}
         </select>
         <br />
         <br />
-        <select onChange>
-          <option value></option>
+        <select onChange={onCategoryChange}>
+          {CategoryOptions.map((item, index) => (
+            <option key={index} value={item.value}>
+              {item.label}
+            </option>
+          ))}
         </select>
         <br />
         <br />

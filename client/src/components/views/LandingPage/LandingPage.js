@@ -31,11 +31,11 @@ function LandingPage() {
         height: "100vh",
       }}
     >
-      <h2>시작 페이지</h2>
+      <h2>시작 페이지wlwlwl</h2>
 
       <button onClick={onClickHandler}>로그아웃</button>
     </div>
   );
 }
 
-export default Auth(LandingPage, null);
+export default LandingPage;

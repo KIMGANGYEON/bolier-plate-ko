@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../../_actions/user_actions";
+import { useNavigate } from "react-router-dom";
+import Auth from "../../../hoc/auth";
 
 function LoginPage() {
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const onEmailHandler = (event) => {
     setEmail(event.currentTarget.value);
@@ -23,7 +26,13 @@ function LoginPage() {
       email: Email,
       password: Password,
     };
-    dispatch(loginUser(body));
+    dispatch(loginUser(body)).then((response) => {
+      if (response.payload.loginSuccess) {
+        navigate("/");
+      } else {
+        alert("Error");
+      }
+    });
   };
 
   return (
@@ -54,4 +63,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default Auth(LoginPage, false);

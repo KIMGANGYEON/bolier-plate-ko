@@ -9,6 +9,7 @@ import { applyMiddleware, createStore } from "redux";
 import promiseMiddleware from "redux-promise";
 import { thunk } from "redux-thunk";
 import Reducer from "./_reducers";
+import "../src/Scss/styles.scss";
 
 const createStoreWithMiddleware = applyMiddleware(
   promiseMiddleware,

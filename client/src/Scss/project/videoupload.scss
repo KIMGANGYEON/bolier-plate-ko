@@ -1,0 +1,28 @@
+.con01 {
+  .formZone {
+    width: 100%;
+    label {
+      font-size: 25px;
+    }
+
+    input {
+      font-size: 20px;
+      width: 100%;
+      padding: 10px;
+    }
+    textarea {
+      font-size: 20px;
+      width: 100%;
+      padding: 10px;
+    }
+    button {
+      background-color: skyblue;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      color: hotpink;
+      font-weight: bold;
+      font-size: 20px;
+    }
+  }
+}

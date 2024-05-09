@@ -12,7 +12,7 @@ function LandingPage() {
       if (response.data.logoutSuccess) {
         navigate("/login");
       } else {
-        alert("로그아웃 실패");
+        alert("로그아웃 실패bo");
       }
     });
   };

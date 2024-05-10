@@ -6,6 +6,9 @@ const bodyParser = require("body-parser");
 const config = require("./config/key");
 const { auth } = require("./middleware/auth");
 const { User } = require("./models/User");
+const multer = require("multer");
+const ffmpeg = require("fluent-ffmpeg");
+// ffmpeg.setFfprobePath("/path/to/ffprobe");
 
 //application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -113,6 +116,81 @@ app.get("/api/users/logout", auth, (req, res) => {
         message: err.message,
       });
     });
+});
+
+let storage = multer.diskStorage({
+  destination: (req, file, cd) => {
+    cd(null, "uploads/");
+  },
+  filename: (req, file, cd) => {
+    cd(null, `${Date.now()}_${file.originalname}`);
+  },
+  fileFilter: (req, file, cd) => {
+    const ext = path.extname(file.originalname);
+    if (ext !== ".mp4") {
+      return cd(res.status(400).end("only mp4 is allowed"), false);
+    }
+    cd(null, true);
+  },
+});
+
+const upload = multer({ storage: storage }).single("file");
+
+app.post("/api/video/uploadfiles", (req, res) => {
+  upload(req, res, (err) => {
+    if (err) {
+      return res.json({ success: false, err });
+    }
+    return res.json({
+      success: true,
+      url: res.req.file.path,
+      fileName: res.req.file.filename,
+    });
+  });
+});
+
+app.post("/api/video/thumbnail", (req, res) => {
+  let filePath = "";
+  let fileDuration = "";
+
+  //비디오 정보 가져오기
+  ffmpeg.ffprobe(req.body.url, function (err, metadata) {
+    if (err) {
+      console.error("Error getting video metadata:", err);
+      return res.json({ success: false, err });
+    }
+
+    console.dir(metadata);
+    console.log(metadata.format.duration);
+    fileDuration = metadata.format.duration;
+
+    //썸네일 생성
+    ffmpeg(req.body.url)
+      .on("filenames", function (filenames) {
+        console.log("Will generate" + filenames.join(", "));
+        console.log(filenames);
+        console.log(filePath);
+        filePath = "uploads/thumbnails" + filenames[0];
+      })
+      .on("end", function () {
+        console.log("Screenshots taken");
+        return res.json({
+          success: true,
+          url: filePath,
+          fileDuration: fileDuration,
+        });
+      })
+      .on("error", function (err) {
+        console.error("Error generating thumbnails:", err);
+        return res.json({ success: false, err });
+      })
+      .screenshots({
+        count: 3,
+        folder: "uploads/thumbnails",
+        size: "320x240",
+        filename: "thumbnail-%b.png",
+      });
+  });
 });
 
 // User.findOneAndUpdate(

@@ -6,8 +6,9 @@ const bodyParser = require("body-parser");
 const config = require("./config/key");
 const { auth } = require("./middleware/auth");
 const { User } = require("./models/User");
+const { Video } = require("./models/Video");
 const multer = require("multer");
-const ffmpeg = require("fluent-ffmpeg");
+var ffmpeg = require("fluent-ffmpeg");
 // ffmpeg.setFfprobePath("/path/to/ffprobe");
 
 //application/x-www-form-urlencoded
@@ -169,8 +170,8 @@ app.post("/api/video/thumbnail", (req, res) => {
       .on("filenames", function (filenames) {
         console.log("Will generate" + filenames.join(", "));
         console.log(filenames);
+        filePath = "uploads/thumbnails/" + filenames[0];
         console.log(filePath);
-        filePath = "uploads/thumbnails" + filenames[0];
       })
       .on("end", function () {
         console.log("Screenshots taken");
@@ -188,8 +189,17 @@ app.post("/api/video/thumbnail", (req, res) => {
         count: 3,
         folder: "uploads/thumbnails",
         size: "320x240",
-        filename: "thumbnail-%b.png",
+        filename: "thumbnail-%b.jpeg",
       });
+  });
+});
+
+app.post("/api/video/uploadVideo", (req, res) => {
+  const video = new Video(req.body);
+
+  video.save((err, doc) => {
+    if (err) return res.join({ success: false, err });
+    res.status(200).json({ success: true });
   });
 });
 

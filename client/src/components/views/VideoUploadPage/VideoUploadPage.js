@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Dropzone from "react-dropzone";
 import Axios from "axios";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const PrivateOptions = [
   { value: 0, label: "Private" },
@@ -16,6 +17,7 @@ const CategoryOptions = [
 ];
 
 function VideoUploadPage() {
+  const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const [VideoTitle, setVideoTitle] = useState("");
   const [Description, setDescription] = useState("");
@@ -24,6 +26,7 @@ function VideoUploadPage() {
   const [FilePath, setFilePath] = useState("");
   const [Duration, setDuration] = useState("");
   const [ThumbnailPath, setThumbnailPath] = useState("");
+  // console.log(user.loginSuccess.userId);
 
   const onTitleChange = (e) => {
     setVideoTitle(e.currentTarget.value);
@@ -74,7 +77,7 @@ function VideoUploadPage() {
     e.preventDefault();
 
     const variables = {
-      writer: user.userId,
+      writer: user.loginSuccess.userId,
       title: VideoTitle,
       description: Description,
       privacy: Private,
@@ -86,7 +89,10 @@ function VideoUploadPage() {
 
     Axios.post("/api/video/uploadVideo", variables).then((response) => {
       if (response.data.success) {
-        console.log(response.data);
+        alert("성공적으로 업로드를 했습니다");
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
       } else {
         alert("비디오 업로드에 실패 했습니다");
       }

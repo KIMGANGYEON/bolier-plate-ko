@@ -1,0 +1,6 @@
+.LandingPage {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  place-items: center;
+  padding: 30px;
+}

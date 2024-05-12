@@ -83,6 +83,33 @@ app.post("/api/users/login", (req, res) => {
     });
 });
 
+//async await
+// app.post("/api/users/login", async (req, res) => {
+//   try {
+//     const user = await User.findOne({ email: req.body.email });
+//     if (!user) {
+//       throw new Error("제공된 이메일에 해당하는 유저가 없습니다.");
+//     }
+
+//     const isMatch = await user.comparePassword(req.body.password);
+//     if (!isMatch) {
+//       throw new Error("비밀번호가 틀렸습니다.");
+//     }
+
+//     const token = await user.generateToken();
+//     res.cookie("x_auth", token).status(200).json({
+//       loginSuccess: true,
+//       userId: user._id,
+//     });
+//   } catch (err) {
+//     console.log(err);
+//     res.status(400).json({
+//       loginSuccess: false,
+//       message: err.message,
+//     });
+//   }
+// });
+
 app.get("/api/users/auth", auth, (req, res) => {
   //여기 까지 미들웨어를 통과해 왔다는 얘기는 Authentication 이 True 라는 말.
   res.status(200).json({
@@ -194,13 +221,24 @@ app.post("/api/video/thumbnail", (req, res) => {
   });
 });
 
-app.post("/api/video/uploadVideo", (req, res) => {
+app.post("/api/video/uploadVideo", async (req, res) => {
   const video = new Video(req.body);
 
-  video.save((err, doc) => {
-    if (err) return res.join({ success: false, err });
-    res.status(200).json({ success: true });
-  });
+  try {
+    await video.save();
+    return res.status(200).json({ success: true });
+  } catch {
+    return res.json({ success: false, err });
+  }
+});
+
+app.get("/api/video/getVideos", async (req, res) => {
+  try {
+    const videos = await Video.find().populate("writer").exec();
+    res.status(200).json({ success: true, videos });
+  } catch {
+    res.status(400).send(err);
+  }
 });
 
 // User.findOneAndUpdate(
